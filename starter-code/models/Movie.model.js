@@ -1,15 +1,16 @@
+//IMPORTACIONES
 const mongoose = require('mongoose');
 const { Schema, model } = mongoose;
 
-//CREACION DEL SCHEMA
+//SCHEMA
 const movieSchema = new Schema({
     title: String,
     genre: String,
     plot: String
 })
 
-// MODELO
+//GENERACION DEL MODELO
 const Movie = model('Movie', movieSchema)
 
-//EXPORTACION
+//EXPORTACIONES
 module.exports = Movie

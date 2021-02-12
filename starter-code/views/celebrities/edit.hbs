@@ -1,23 +1,20 @@
-<h2>Editaaar</h2>
-<a href="/">Inicio</a>
-
+<h2>Edit Artist</h2>
+ 
 <form action="/celebrities/edit/{{celebrities.id}}" method="POST">
+  <label>
+    Name:
+    <input type="text" name="name" value="{{celebrities.name}}" />
+  </label>
+  
+  <label>
+    Occupation:
+    <input type="text" name="occupation" value="{{celebrities.occupation}}" />
+  </label>
 
-    <div>
-        <label>Name:</label>
-        <input value="{{celebrities.name}}" name="name" type="text">
-    </div>
-    </br>
-    <div>
-        <label>Occupation:</label>
-        <input value="{{celebrities.occupation}}"name="occupation" type="text">
-    </div>
-    </br>
-    <div>
-        <label>Catch phrase:</label>
-        <textarea name="catchPhrase" cols="30" rows="4">{{celebrities.catchPhrase}}</textarea>
-    </div>
-    </br>
-    <button type="submit">Save changes</button>
-
+  <label>
+    Catch phrase:
+    <input type="text" name="catchPhrase"  value="{{celebrities.catchPhrase}}" />
+  </label>
+ 
+  <button type="submit">Save changes</button>
 </form>

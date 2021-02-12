@@ -1,96 +1,92 @@
 const express = require('express');
-const Celebrity = require('../models/Celebrity.model');
-const router = express.Router()
+const Celebrity = require('../models/Celebrity.model.js')
 
-
-
-
-//RUTA PARA OBTENER EL NOMBRE DE ARTISTIAS
+const router = express.Router();
 
 router.get('/celebrities', (req, res, next) => {
+
     Celebrity.find()
-        .then(cele => {
-            console.log(cele)
-            res.render('celebrities/index', { cele })
-        }).catch(error => { next(error) })
-})
+        .then((allCelebrities) => {
+            console.log(allCelebrities)
+            res.render("celebrities/index", { allCelebrities })
+        }).catch(error => {
+            console.log("No pudimos conseguir las celebridades")
+            next(error)
+        })
 
+});
 
-
-//Ruta para añadir nuevas celebridades
+// Iteration #4: Adding New Celebrities
 router.get('/celebrities/new', (req, res, next) => {
     res.render('celebrities/new')
-})
+});
 
 router.post('/celebrities/new', (req, res, next) => {
-    console.log(req.body)
     const { name, occupation, catchPhrase } = req.body
 
     Celebrity.create({
             name,
             occupation,
             catchPhrase
-        }).then((actorCreated) => {
-            console.log(actorCreated)
+        })
+        .then((artistCreate) => {
+
             res.redirect('/celebrities')
         })
         .catch(error => {
-            console.log(error)
             res.render('celebrities/new')
         })
 });
-// RUTA PARA BORRAR
-router.post("/celebrities/delete/:id", (req, res, next) => {
+
+// Iteration #3: The Celebrity Details Page
+//Rutas con parámetros siempre van abajo
+router.get('/celebrities/:artistId', (req, res, next) => {
+
+    const id = req.params.artistId
+
+    Celebrity.findById(id)
+        .then((detailCelebrity) => {
+            res.render('celebrities/show', { celebrities: detailCelebrity })
+        })
+        .catch(error => next(error))
+});
+
+//Iteration #5: Deleting Celebrities
+router.post('/celebrities/delete/:id', (req, res, next) => {
+
     const id = req.params.id
 
     Celebrity.findByIdAndDelete(id)
         .then(() => {
-            res.redirect("/celebrities")
+            res.redirect('/celebrities')
         })
-        .catch((error) => {
-            next(error)
-        })
-})
+        .catch((error) => next(error))
+});
 
-//RUTA PARA EDITAR
-
+//Iteration #6 (Bonus): Editing Celebrities
 router.get('/celebrities/edit/:id', (req, res, next) => {
+
     const { id } = req.params
+
     Celebrity.findById(id)
-        .then((toFind) => {
-            res.render('celebrities/edit', {
-                celebrities: toFind
-            })
+        .then((celebritieToFindEdit) => {
+            console.log(celebritieToFindEdit)
+            res.render('celebrities/edit', { celebrities: celebritieToFindEdit })
         })
         .catch(error => next(error))
-})
+});
 
+router.post('/celebrities/edit/:id', (req, res, next) => {
 
-
-router.post("/celebrities/edit/:id", (req, res, next) => {
     const { id } = req.params
 
     const { name, occupation, catchPhrase } = req.body
+
     Celebrity.findByIdAndUpdate(id, { name, occupation, catchPhrase }, { new: true })
-        .then((updated) => {
-            console.log(updated)
-            res.redirect('/celebrities')
-        }).catch((error) => {
-            next(error)
+        .then((artistActualizado) => {
+            res.redirect(`/celebrities/${artistActualizado.id}`)
         })
+        .catch(error => next(error))
+});
 
-})
-
-//RUTA PARA OBTENER INFORMACIÓN COMPLETA DEL ARTISTA
-router.get('/celebrities/detail/:id', (req, res, next) => {
-    console.log(req.params)
-    const id = req.params.id
-    Celebrity.findById(id)
-        .then((found) => {
-            console.log(found)
-            res.render('celebrities/show', { found })
-        }).catch((error) => { console.log(error) })
-})
-
-
-module.exports = router
+module.exports = router;
